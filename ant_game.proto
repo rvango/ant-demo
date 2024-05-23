@@ -1,0 +1,126 @@
+syntax = "proto3";
+
+package AntGame;
+
+// We have a single service called AntGameService which define a service for a Ant-like game
+// It also has another method where the client connects to the server by joining a game and the server responds with a player id
+// The server should also have a list of available game that a player can join, each game should have a unique id, a name, a list of player and a state (waiting, running, finished)
+// The service should also have a method that returns the state of the world when requested by the client
+// The service should have a method for the client to send a list of moves to the server which would return the new state of the game in return
+service AntGameService {
+  rpc ShowGames (Empty) returns (GameList);
+  rpc Connect (Game) returns (ConnectResponse);
+  rpc GetWorld (Player) returns (World);
+  rpc SendMoves (MoveList) returns (World);
+}
+
+// The World message contains the state of the world
+message World {
+  // The width of the world
+  int32 width = 1;
+  // The height of the world
+  int32 height = 2;
+  // The list of ants in the world
+  repeated Ant ants = 3;
+  // The list of food in the world
+  repeated Food food = 4;
+  // The list of obstacles in the world
+  repeated Obstacle obstacles = 5;
+  // Ticker age of the world snapshot
+  int32 age = 6;
+}
+
+// The Ant message contains the state of an ant
+message Ant {
+  // The player id of the ant
+  int32 playerId = 1;
+  // The x position of the ant
+  int32 x = 2;
+  // The y position of the ant
+  int32 y = 3;
+  // The direction of the ant
+  Direction direction = 4;
+  // The amount of food the ant is carrying
+  int32 food = 5;
+}
+
+// The Food message contains the state of a food
+message Food {
+  // The x position of the food
+  int32 x = 1;
+  // The y position of the food
+  int32 y = 2;
+}
+
+// The Obstacle message contains the state of an obstacle
+message Obstacle {
+  // The x position of the obstacle
+  int32 x = 1;
+  // The y position of the obstacle
+  int32 y = 2;
+}
+
+// The Direction enum contains the possible directions an ant can move
+enum Direction {
+  NORTH = 0;
+  EAST = 1;
+  SOUTH = 2;
+  WEST = 3;
+}
+
+// The MoveList message contains a list of moves
+message MoveList {
+  // The list of moves
+  repeated Move moves = 1;
+}
+
+// The Move message contains a move
+message Move {
+  // The direction of the move
+  Direction direction = 1;
+}
+
+// The PlayerId message contains the player id of the client
+message Player {
+  // The player id
+  int32 playerId = 1;
+}
+
+// The ConnectResponse message contains the response to the Connect method
+message ConnectResponse {
+  // The player id of the client
+  int32 playerId = 1;
+}
+
+// The GameList message contains a list of games
+message GameList {
+  // The list of games
+  repeated Game games = 1;
+}
+
+// The Game message contains the state of a game
+message Game {
+  // The id of the game
+  int32 id = 1;
+  // The name of the game
+  string name = 2;
+  // The list of players in the game
+  repeated Player players = 3;
+  // The state of the game
+  State state = 4;
+  // A state-of-the-world message
+  World world = 5;
+  // The maximum number of players in the game
+  int32 maxPlayers = 6;
+}
+
+// The State enum contains the possible states of a game
+enum State {
+  WAITING = 0;
+  RUNNING = 1;
+  FINISHED = 2;
+}
+
+// The Empty message is an empty message
+message Empty {
+}

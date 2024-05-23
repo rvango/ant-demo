@@ -1,0 +1,10 @@
+name: ant_demo
+channels:
+  - conda-forge
+dependencies:
+  - python=3.8.*
+  - nodejs=14.*
+  - pip
+  - pip:
+      - grpcio==1.42.*  # Specifying gRPC version for Python
+      - grpcio-tools==1.42.*  # Ensuring compatibility with grpcio
